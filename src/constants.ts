@@ -1,8 +1,9 @@
 type Properties = {
   symbol: string;
-  isSpaced?: boolean;
-  hasWrapper?: boolean;
-  breakLine?: boolean;
+  spaced?: boolean;
+  wrapper?: boolean;
+  break?: boolean;
+  isolate?: boolean;
 };
 
 type ElementProperties = {
@@ -18,52 +19,59 @@ export const Elements: ElementProperties = {
   },
   p: {
     symbol: "",
-    breakLine: true,
+    break: true,
+    isolate: true,
   },
   h1: {
     symbol: "#",
-    isSpaced: true,
-    hasWrapper: false,
+    spaced: true,
+    break: true,
   },
   h2: {
     symbol: "##",
-    isSpaced: true,
-    hasWrapper: false,
+    spaced: true,
+    break: true,
   },
   h3: {
     symbol: "###",
-    isSpaced: true,
+    spaced: true,
+    break: true,
   },
   h4: {
     symbol: "####",
-    isSpaced: true,
+    spaced: true,
+    break: true,
   },
   h5: {
     symbol: "#####",
-    isSpaced: true,
+    spaced: true,
+    break: true,
   },
   h6: {
     symbol: "######",
-    isSpaced: true,
+    spaced: true,
+    break: true,
   },
   bold: {
     symbol: "*",
-    hasWrapper: true,
+    wrapper: true,
   },
   italic: {
     symbol: "_",
-    hasWrapper: true,
+    wrapper: true,
   },
   blockquote: {
     symbol: ">",
-    isSpaced: true,
+    spaced: true,
+    break: true,
+    isolate: true,
   },
   code: {
     symbol: "`",
-    hasWrapper: true,
+    wrapper: true,
   },
   strike: {
     symbol: "~~",
-    hasWrapper: true,
+    wrapper: true,
   },
 };

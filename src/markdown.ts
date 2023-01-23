@@ -12,16 +12,22 @@ export type Attributes = {
 
 export type ElementOpts = {
   symbol: string;
-  isSpaced: boolean;
-  hasWrapper: boolean;
+  spaced: boolean;
+  wrapper: boolean;
+  break: boolean;
+  isolate: boolean;
 } & Attributes;
 
 export class Element {
   symbol: string;
 
-  isSpaced: boolean = false;
+  spaced: boolean = false;
 
-  hasWrapper: boolean = false;
+  wrapper: boolean = false;
+
+  break: boolean = false;
+
+  isolate: boolean = false;
 
   attributes: Attributes = {};
 
@@ -33,8 +39,10 @@ export class Element {
 
   constructor(opts: ElementOpts, attributes: Attributes, value: Value) {
     this.symbol = opts.symbol;
-    this.isSpaced = opts.isSpaced;
-    this.hasWrapper = opts.hasWrapper;
+    this.spaced = opts.spaced;
+    this.wrapper = opts.wrapper;
+    this.break = opts.break;
+    this.isolate = opts.isolate;
 
     if (typeof attributes != "object") {
       value = attributes;
@@ -52,31 +60,37 @@ export class Element {
   toHtml(prefix: string = "") {
     const res: Array<string> = [];
 
-    if (this.symbol) {
-      if (this.symbol !== "text") {
-        res.push(this.symbol);
-      }
+    if (this.isolate) {
+      res.push("\n");
+    }
 
-      if (this.isSpaced) {
-        res.push(" ");
-      }
+    if (this.symbol !== "text") {
+      res.push(this.symbol);
+    }
 
-      if (this.value) {
-        res.push(String(this.value));
-      }
+    if (this.spaced) {
+      res.push(" ");
+    }
+
+    if (this.value) {
+      res.push(String(this.value));
     }
 
     this.children.forEach((c) => {
       res.push(c.toHtml(prefix));
     });
 
-    if (this.hasWrapper) {
+    if (this.wrapper) {
       if (this.children.length && this.symbol !== "text") {
         res.push(prefix);
       }
       if (this.symbol !== "text") {
         res.push(this.symbol);
       }
+    }
+
+    if (this.break || this.isolate) {
+      res.push("\n");
     }
 
     return res.join("");
@@ -94,8 +108,10 @@ export class ElementFactory extends AbstractFactory<Element, Element> {
   newInstance(builder: JsDsl, name: string, attr: Attributes, value: Value) {
     const opts: ElementOpts = {
       symbol: this.opts.symbol as string,
-      isSpaced: this.opts.isSpaced as boolean,
-      hasWrapper: this.opts.hasWrapper as boolean,
+      spaced: this.opts.spaced as boolean,
+      wrapper: this.opts.wrapper as boolean,
+      break: this.opts.break as boolean,
+      isolate: this.opts.isolate as boolean,
     };
 
     return new Element(opts, attr, value);
@@ -121,8 +137,10 @@ export class BlockBuilder extends JsDsl {
         name,
         new ElementFactory({
           symbol: element.symbol,
-          isSpaced: element.isSpaced,
-          hasWrapper: element.hasWrapper,
+          spaced: element.spaced,
+          wrapper: element.wrapper,
+          break: element.break,
+          isolate: element.isolate,
         })
       )
     );
